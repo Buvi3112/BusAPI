@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BusDBModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="8.0" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="admin">
+          <Key>
+            <PropertyRef Name="adminId" />
+          </Key>
+          <Property Name="adminId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="Password" Type="varchar" MaxLength="45" />
+          <Property Name="Email" Type="varchar" MaxLength="45" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="bookedseats">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BusId" Type="int" />
+          <Property Name="SeatId" Type="int" />
+          <Property Name="BookedStatus" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="bus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="OwnerName" Type="varchar" MaxLength="45" />
+          <Property Name="BookedSeats" Type="int" />
+          <Property Name="UpperSeats" Type="int" />
+          <Property Name="LowerSeats" Type="int" />
+          <Property Name="Source" Type="varchar" MaxLength="45" />
+          <Property Name="Destination" Type="varchar" MaxLength="45" />
+          <Property Name="DriverName" Type="varchar" MaxLength="45" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="45" />
+          <Property Name="TotalSeats" Type="int" />
+        </EntityType>
+        <EntityType Name="busowner">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="Password" Type="varchar" MaxLength="45" />
+          <Property Name="Email" Type="varchar" MaxLength="45" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="45" />
+          <Property Name="Age" Type="int" />
+          <Property Name="BusId" Type="int" />
+          <Property Name="ApprovedByAdmin" Type="int" />
+        </EntityType>
+        <EntityType Name="busroute">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BusId" Type="int" />
+          <Property Name="RouteId" Type="int" />
+        </EntityType>
+        <EntityType Name="route">
+          <Key>
+            <PropertyRef Name="RouteId" />
+          </Key>
+          <Property Name="RouteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="seat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="Age" Type="int" />
+          <Property Name="Gender" Type="varchar" MaxLength="45" />
+          <Property Name="SeatNumber" Type="varchar" MaxLength="45" />
+          <Property Name="AmountPaid" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="45" />
+          <Property Name="Source" Type="varchar" MaxLength="45" />
+          <Property Name="Destination" Type="varchar" MaxLength="45" />
+          <Property Name="BusId" Type="int" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="45" />
+          <Property Name="Email" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <Association Name="AdminId">
+          <End Role="admin" Type="Self.admin" Multiplicity="0..1" />
+          <End Role="busowner" Type="Self.busowner" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="admin">
+              <PropertyRef Name="adminId" />
+            </Principal>
+            <Dependent Role="busowner">
+              <PropertyRef Name="ApprovedByAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OwnerBusId">
+          <End Role="bus" Type="Self.bus" Multiplicity="0..1" />
+          <End Role="busowner" Type="Self.busowner" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="busowner">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RouteBusId">
+          <End Role="bus" Type="Self.bus" Multiplicity="0..1" />
+          <End Role="busroute" Type="Self.busroute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="busroute">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RouteId">
+          <End Role="route" Type="Self.route" Multiplicity="0..1" />
+          <End Role="busroute" Type="Self.busroute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="route">
+              <PropertyRef Name="RouteId" />
+            </Principal>
+            <Dependent Role="busroute">
+              <PropertyRef Name="RouteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SeatBusId">
+          <End Role="bus" Type="Self.bus" Multiplicity="0..1" />
+          <End Role="bookedseats" Type="Self.bookedseats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="bookedseats">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SeatId">
+          <End Role="seat" Type="Self.seat" Multiplicity="0..1" />
+          <End Role="bookedseats" Type="Self.bookedseats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="seat">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="bookedseats">
+              <PropertyRef Name="SeatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserBusId">
+          <End Role="bus" Type="Self.bus" Multiplicity="0..1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BusDBModelStoreContainer">
+          <EntitySet Name="admin" EntityType="Self.admin" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="bookedseats" EntityType="Self.bookedseats" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="bus" EntityType="Self.bus" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="busowner" EntityType="Self.busowner" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="busroute" EntityType="Self.busroute" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="route" EntityType="Self.route" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="seat" EntityType="Self.seat" Schema="busdb_schema" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="busdb_schema" store:Type="Tables" />
+          <AssociationSet Name="AdminId" Association="Self.AdminId">
+            <End Role="admin" EntitySet="admin" />
+            <End Role="busowner" EntitySet="busowner" />
+          </AssociationSet>
+          <AssociationSet Name="OwnerBusId" Association="Self.OwnerBusId">
+            <End Role="bus" EntitySet="bus" />
+            <End Role="busowner" EntitySet="busowner" />
+          </AssociationSet>
+          <AssociationSet Name="RouteBusId" Association="Self.RouteBusId">
+            <End Role="bus" EntitySet="bus" />
+            <End Role="busroute" EntitySet="busroute" />
+          </AssociationSet>
+          <AssociationSet Name="RouteId" Association="Self.RouteId">
+            <End Role="route" EntitySet="route" />
+            <End Role="busroute" EntitySet="busroute" />
+          </AssociationSet>
+          <AssociationSet Name="SeatBusId" Association="Self.SeatBusId">
+            <End Role="bus" EntitySet="bus" />
+            <End Role="bookedseats" EntitySet="bookedseats" />
+          </AssociationSet>
+          <AssociationSet Name="SeatId" Association="Self.SeatId">
+            <End Role="seat" EntitySet="seat" />
+            <End Role="bookedseats" EntitySet="bookedseats" />
+          </AssociationSet>
+          <AssociationSet Name="UserBusId" Association="Self.UserBusId">
+            <End Role="bus" EntitySet="bus" />
+            <End Role="user" EntitySet="user" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BusDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="admin">
+          <Key>
+            <PropertyRef Name="adminId" />
+          </Key>
+          <Property Name="adminId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="busowners" Relationship="BusDBModel.AdminId" FromRole="admin" ToRole="busowner" />
+        </EntityType>
+        <EntityType Name="bookedseat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BusId" Type="Int32" />
+          <Property Name="SeatId" Type="Int32" />
+          <Property Name="BookedStatus" Type="String" />
+          <NavigationProperty Name="seat" Relationship="Self.SeatId" FromRole="bookedseats" ToRole="seat" />
+          <NavigationProperty Name="bus" Relationship="BusDBModel.SeatBusId" FromRole="bookedseat" ToRole="bus" />
+        </EntityType>
+        <EntityType Name="bus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="OwnerName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="BookedSeats" Type="Int32" />
+          <Property Name="Source" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Destination" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="DriverName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="TotalSeats" Type="Int32" />
+          <NavigationProperty Name="busowners" Relationship="Self.OwnerBusId" FromRole="bus" ToRole="busowner" />
+          <NavigationProperty Name="users" Relationship="Self.UserBusId" FromRole="bus" ToRole="user" />
+          <NavigationProperty Name="bookedseats1" Relationship="BusDBModel.SeatBusId" FromRole="bus" ToRole="bookedseat" />
+          <NavigationProperty Name="busroutes" Relationship="BusDBModel.RouteBus" FromRole="bus" ToRole="busroute" />
+          <Property Name="UpperSeats" Type="Int32" />
+          <Property Name="LowerSeats" Type="Int32" />
+        </EntityType>
+        <EntityType Name="busowner">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Age" Type="Int32" />
+          <Property Name="BusId" Type="Int32" />
+          <NavigationProperty Name="bus" Relationship="Self.OwnerBusId" FromRole="busowner" ToRole="bus" />
+          <Property Name="ApprovedByAdmin" Type="Int32" />
+          <NavigationProperty Name="admin" Relationship="BusDBModel.AdminId" FromRole="busowner" ToRole="admin" />
+        </EntityType>
+        <EntityType Name="busroute">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BusId" Type="Int32" />
+          <Property Name="RouteId" Type="Int32" />
+          <NavigationProperty Name="route" Relationship="Self.RouteId" FromRole="busroute" ToRole="route" />
+          <NavigationProperty Name="bus" Relationship="BusDBModel.RouteBus" FromRole="busroute" ToRole="bus" />
+        </EntityType>
+        <EntityType Name="route">
+          <Key>
+            <PropertyRef Name="RouteId" />
+          </Key>
+          <Property Name="RouteId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="busroutes" Relationship="Self.RouteId" FromRole="route" ToRole="busroute" />
+        </EntityType>
+        <EntityType Name="seat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="bookedseats" Relationship="Self.SeatId" FromRole="seat" ToRole="bookedseats" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Age" Type="Int32" />
+          <Property Name="Gender" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="SeatNumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="AmountPaid" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Source" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Destination" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="BusId" Type="Int32" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="bus" Relationship="Self.UserBusId" FromRole="user" ToRole="bus" />
+        </EntityType>
+        <Association Name="SeatId">
+          <End Role="seat" Type="Self.seat" Multiplicity="0..1" />
+          <End Role="bookedseats" Type="Self.bookedseat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="seat">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="bookedseats">
+              <PropertyRef Name="SeatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OwnerBusId">
+          <End Role="bus" Type="Self.bus" Multiplicity="0..1" />
+          <End Role="busowner" Type="Self.busowner" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="busowner">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserBusId">
+          <End Role="bus" Type="Self.bus" Multiplicity="0..1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RouteId">
+          <End Role="route" Type="Self.route" Multiplicity="0..1" />
+          <End Role="busroute" Type="Self.busroute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="route">
+              <PropertyRef Name="RouteId" />
+            </Principal>
+            <Dependent Role="busroute">
+              <PropertyRef Name="RouteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BusDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="admins" EntityType="Self.admin" />
+          <EntitySet Name="bookedseats" EntityType="Self.bookedseat" />
+          <EntitySet Name="buses" EntityType="Self.bus" />
+          <EntitySet Name="busowners" EntityType="Self.busowner" />
+          <EntitySet Name="busroutes" EntityType="Self.busroute" />
+          <EntitySet Name="routes" EntityType="Self.route" />
+          <EntitySet Name="seats" EntityType="Self.seat" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="SeatId" Association="Self.SeatId">
+            <End Role="seat" EntitySet="seats" />
+            <End Role="bookedseats" EntitySet="bookedseats" />
+          </AssociationSet>
+          <AssociationSet Name="OwnerBusId" Association="Self.OwnerBusId">
+            <End Role="bus" EntitySet="buses" />
+            <End Role="busowner" EntitySet="busowners" />
+          </AssociationSet>
+          <AssociationSet Name="UserBusId" Association="Self.UserBusId">
+            <End Role="bus" EntitySet="buses" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="RouteId" Association="Self.RouteId">
+            <End Role="route" EntitySet="routes" />
+            <End Role="busroute" EntitySet="busroutes" />
+          </AssociationSet>
+          <AssociationSet Name="SeatBusId" Association="BusDBModel.SeatBusId">
+            <End Role="bus" EntitySet="buses" />
+            <End Role="bookedseat" EntitySet="bookedseats" />
+          </AssociationSet>
+          <AssociationSet Name="RouteBus" Association="BusDBModel.RouteBus">
+            <End Role="bus" EntitySet="buses" />
+            <End Role="busroute" EntitySet="busroutes" />
+          </AssociationSet>
+          <AssociationSet Name="AdminId" Association="BusDBModel.AdminId">
+            <End Role="admin" EntitySet="admins" />
+            <End Role="busowner" EntitySet="busowners" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="SeatBusId">
+          <End Type="BusDBModel.bus" Role="bus" Multiplicity="0..1" />
+          <End Type="BusDBModel.bookedseat" Role="bookedseat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="bookedseat">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RouteBus">
+          <End Type="BusDBModel.bus" Role="bus" Multiplicity="0..1" />
+          <End Type="BusDBModel.busroute" Role="busroute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="busroute">
+              <PropertyRef Name="BusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdminId">
+          <End Type="BusDBModel.admin" Role="admin" Multiplicity="0..1" />
+          <End Type="BusDBModel.busowner" Role="busowner" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="admin">
+              <PropertyRef Name="adminId" />
+            </Principal>
+            <Dependent Role="busowner">
+              <PropertyRef Name="ApprovedByAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BusDBModelStoreContainer" CdmEntityContainer="BusDBEntities">
+          <EntitySetMapping Name="admins">
+            <EntityTypeMapping TypeName="BusDBModel.admin">
+              <MappingFragment StoreEntitySet="admin">
+                <ScalarProperty Name="adminId" ColumnName="adminId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bookedseats">
+            <EntityTypeMapping TypeName="BusDBModel.bookedseat">
+              <MappingFragment StoreEntitySet="bookedseats">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="BusId" ColumnName="BusId" />
+                <ScalarProperty Name="SeatId" ColumnName="SeatId" />
+                <ScalarProperty Name="BookedStatus" ColumnName="BookedStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="buses">
+            <EntityTypeMapping TypeName="BusDBModel.bus">
+              <MappingFragment StoreEntitySet="bus">
+                <ScalarProperty Name="LowerSeats" ColumnName="LowerSeats" />
+                <ScalarProperty Name="UpperSeats" ColumnName="UpperSeats" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
+                <ScalarProperty Name="BookedSeats" ColumnName="BookedSeats" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Destination" ColumnName="Destination" />
+                <ScalarProperty Name="DriverName" ColumnName="DriverName" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="TotalSeats" ColumnName="TotalSeats" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="busowners">
+            <EntityTypeMapping TypeName="BusDBModel.busowner">
+              <MappingFragment StoreEntitySet="busowner">
+                <ScalarProperty Name="ApprovedByAdmin" ColumnName="ApprovedByAdmin" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="BusId" ColumnName="BusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="busroutes">
+            <EntityTypeMapping TypeName="BusDBModel.busroute">
+              <MappingFragment StoreEntitySet="busroute">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="BusId" ColumnName="BusId" />
+                <ScalarProperty Name="RouteId" ColumnName="RouteId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="routes">
+            <EntityTypeMapping TypeName="BusDBModel.route">
+              <MappingFragment StoreEntitySet="route">
+                <ScalarProperty Name="RouteId" ColumnName="RouteId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="seats">
+            <EntityTypeMapping TypeName="BusDBModel.seat">
+              <MappingFragment StoreEntitySet="seat">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="BusDBModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="SeatNumber" ColumnName="SeatNumber" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Destination" ColumnName="Destination" />
+                <ScalarProperty Name="BusId" ColumnName="BusId" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
